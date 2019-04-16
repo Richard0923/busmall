@@ -1,59 +1,102 @@
 'use strict'
 
 var imageArray = []; 
-var usedImgArray = [];
+var imageDescriptions = [];
+
 var totalClicks = 0;
+var MAX_CLICKS = 25;
 
-var imgRef1 = document.getElementById('img1');
-var imgRef2 = document.getElementById('img2');
-var imgRef3 = document.getElementById('img3');
+var imgId1 = "img1";
+var imgId2 = "img2";
+var imgId3 = "img3";
 
-function getRandomImg(){
-    var randomNumber = Math.floor(Math.random() * imageArray.length);
-    return randomNumber;
+
+
+
+
+function randomIndexGenerator(){
+    this.previousIndices = [-1, -2, -3];
+    this.currentIndices = [];
+
+    this.getRandomIndex = function(){
+        var randomNumber = Math.floor(Math.random() * imageArray.length);
+        return randomNumber;
+    }
+    this.isIndexDuplicated = function(newRandomNumber){
+        return this.currentIndices.includes(newRandomNumber) || this.previousIndices.includes(newRandomNumber);
+    }
+    this.getThreeRandomIndices = function(){
+        this.previousIndices = this.currentIndices;
+        this.currentIndices = [];
+
+        var newRandomNumber = this.getRandomIndex();
+
+        while(this.currentIndices.length < 3) {
+            if(this.isIndexDuplicated(newRandomNumber)){
+                newRandomNumber = this.getRandomIndex();
+            } else {
+                this.currentIndices.push(newRandomNumber);
+                newRandomNumber = this.getRandomIndex();
+            }
+        }
+    }
 }
 
-function imgconstructer(imgPath, name){
-    this.imgPath = imgPath;
-    this.name = name;
+var random = new randomIndexGenerator();
+
+
+function renderThreeRandomImages(event){
+    //add counter
+    if(event) {
+        for(var i = 0; i < imageArray.length; i++) {
+            if(event.target.alt == imageArray[i].decription) {
+                imageArray[i].registerClick();
+            }
+        }
+        totalClicks++;
+        
+        if(totalClicks === MAX_CLICKS) {
+            renderChart();
+        }
+    }
+    random.getThreeRandomIndices();
+    var imagesIndices = random.currentIndices;
+
+    var imageOneRef = document.getElementById(imgId1);
+    var imageTwoRef = document.getElementById(imgId2);
+    var imageThreeRef = document.getElementById(imgId3);
+    
+    var randomIndexOne = imagesIndices[0];
+    var randomIndexTwo = imagesIndices[1];
+    var randomIndexThree = imagesIndices[2];
+
+    var imageOne = imageArray[randomIndexOne];
+    var imageTwo = imageArray[randomIndexTwo];
+    var imageThree = imageArray[randomIndexThree];
+
+    imageOneRef.src = imageOne.imgPath;
+    imageOneRef.alt = imageOne.decription;
+
+    imageTwoRef.src = imageTwo.imgPath;
+    imageTwoRef.alt = imageTwo.decription;
+
+    imageThreeRef.src = imageThree.imgPath;
+    imageThreeRef.alt = imageThree.decription;
+}
+
+function imgconstructer(imgPath, decription){
+    this.imgPath = imgPath; 
+    this.descriptions = decription;
     this.timesClicked = 0;
+
     imageArray.push(this);
+    imageDescriptions.push(decription);
 
+    this.registerClick = function() {
+        this.timesClicked++;
+    }
 }
 
-var previousIndex = -1;
-
-function renderImg(){
-    
-    var randomIndex = getRandomImg();
-    while(usedImgArray === randomIndex){
-        randomIndex = getRandomImg();
-    }
-    usedImgArray.push(randomIndex);
-
-    var randomIndex2 = getRandomImg();
-    while(usedImgArray === randomIndex2){
-        randomIndex2 = getRandomImg();
-    }
-    usedImgArray.push(randomIndex2);
-
-    var randomIndex3 = getRandomImg();
-    while(usedImgArray === randomIndex3){
-        randomIndex = getRandomImg();
-    }
-    usedImgArray.push(randomIndex3);
-
-    previousIndex = randomIndex;
-    
-    imgRef1.src = imageArray[randomIndex].imgPath; //details now live in an array just access that array at desire index to render image
-    imgRef1.alt = imageArray[randomIndex].name;
-
-    imgRef2.src = imageArray[randomIndex2].imgPath;
-    imgRef2.alt = imageArray[randomIndex2].name;
-
-    imgRef3.src = imageArray[randomIndex3].imgPath;
-    imgRef3.alt = imageArray[randomIndex3].name;
-}
 
 new imgconstructer('img/bag.jpg', 'R2D2 Suit Case');
 new imgconstructer('img/banana.jpg', 'Banana cutter');
@@ -76,8 +119,42 @@ new imgconstructer('img/water-can.jpg', 'More like unwater can ');
 new imgconstructer('img/usb.gif', 'Tenticale usb');
 new imgconstructer('img/wine-glass.jpg', 'Badly made glass');
 
-renderImg();
+var imageOneRef = document.getElementById(imgId1);
+var imageTwoRef = document.getElementById(imgId2);
+var imageThreeRef = document.getElementById(imgId3);
 
-imgRef1.addEventListener('click', renderImg);
-imgRef2.addEventListener('click', renderImg);
-imgRef3.addEventListener('click', renderImg);
+imageOneRef.addEventListener('click', renderThreeRandomImages);
+imageTwoRef.addEventListener('click', renderThreeRandomImages);
+imageThreeRef.addEventListener('click', renderThreeRandomImages);
+
+renderThreeRandomImages();
+
+function renderChart() {
+    var canvasRef = document.getElementById("results-chart");
+
+    var totalVotes = [];
+    for(var i = 0; i < imageArray.length; i++){
+        totalVotes.push(imageArray[i].timesClicked);
+    }
+
+    new Chart(canvasRef, { 
+        type: 'bar',
+        data: {
+          labels: imageDescriptions,  // label for each individual bar
+          datasets: [{
+            label: 'Votes Per Image',
+            data: totalVotes, // an array of the number of votes per goat
+            backgroundColor: ['red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink'],
+          }],
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              tick: {
+                beginAtZero: true,
+              }
+            }]
+          }
+        }
+    });
+};
