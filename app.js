@@ -1,8 +1,12 @@
 'use strict'
 
 var imageArray = []; 
-
+var usedImgArray = [];
 var totalClicks = 0;
+
+var imgRef1 = document.getElementById('img1');
+var imgRef2 = document.getElementById('img2');
+var imgRef3 = document.getElementById('img3');
 
 function getRandomImg(){
     var randomNumber = Math.floor(Math.random() * imageArray.length);
@@ -20,16 +24,35 @@ function imgconstructer(imgPath, name){
 var previousIndex = -1;
 
 function renderImg(){
-    var imgRef = document.getElementById('img1')
-    var randomIndex = getRandomImg();
     
-    while(randomIndex === previousIndex){
+    var randomIndex = getRandomImg();
+    while(usedImgArray === randomIndex){
         randomIndex = getRandomImg();
     }
+    usedImgArray.push(randomIndex);
+
+    var randomIndex2 = getRandomImg();
+    while(usedImgArray === randomIndex2){
+        randomIndex2 = getRandomImg();
+    }
+    usedImgArray.push(randomIndex2);
+
+    var randomIndex3 = getRandomImg();
+    while(usedImgArray === randomIndex3){
+        randomIndex = getRandomImg();
+    }
+    usedImgArray.push(randomIndex3);
+
     previousIndex = randomIndex;
-    var randomImg = imageArray[randomIndex];
-    imgRef.src = randomImg.imgPath;
-    imgRef.alt = randomImg.name;
+    
+    imgRef1.src = imageArray[randomIndex].imgPath; //details now live in an array just access that array at desire index to render image
+    imgRef1.alt = imageArray[randomIndex].name;
+
+    imgRef2.src = imageArray[randomIndex2].imgPath;
+    imgRef2.alt = imageArray[randomIndex2].name;
+
+    imgRef3.src = imageArray[randomIndex3].imgPath;
+    imgRef3.alt = imageArray[randomIndex3].name;
 }
 
 new imgconstructer('img/bag.jpg', 'R2D2 Suit Case');
@@ -53,16 +76,8 @@ new imgconstructer('img/water-can.jpg', 'More like unwater can ');
 new imgconstructer('img/usb.gif', 'Tenticale usb');
 new imgconstructer('img/wine-glass.jpg', 'Badly made glass');
 
-
-
-
-
-
-
-
-
-
 renderImg();
 
-var imgRef = document.getElementById('img1');
-imgRef.addEventListener('click', renderImg);
+imgRef1.addEventListener('click', renderImg);
+imgRef2.addEventListener('click', renderImg);
+imgRef3.addEventListener('click', renderImg);
