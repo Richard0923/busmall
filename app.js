@@ -1,10 +1,11 @@
 'use strict'
 
-var imageArray = []; 
-var imageDescriptions = [];
+var imageArray = []; //store all the images
+var imageDescriptions = []; //store the image's description 
+var views = []; //still need to work on that 
 
 var totalClicks = 0;
-var MAX_CLICKS = 25;
+var MAX_CLICKS = 25; //make sure to change the number back
 
 var imgId1 = "img1";
 var imgId2 = "img2";
@@ -118,7 +119,7 @@ new imgconstructer('img/shark.jpg', 'Shark blanket');
 new imgconstructer('img/sweep.png', 'Cleaning baby');
 new imgconstructer('img/tauntaun.jpg', 'starwars blanket');
 new imgconstructer('img/unicorn.jpg', 'Unicorn meat');
-new imgconstructer('img/water-can.jpg', 'More like unwater can ');
+new imgconstructer('img/water-can.jpg', 'More like unwater-can ');
 new imgconstructer('img/usb.gif', 'Tenticale usb');
 new imgconstructer('img/wine-glass.jpg', 'Badly made glass');
 
@@ -132,7 +133,13 @@ imageThreeRef.addEventListener('click', renderThreeRandomImages);
 
 renderThreeRandomImages();
 
+var votesSaved = [];//for the local storage
+
 function renderChart() {
+    imageOneRef.removeEventListener('click', renderThreeRandomImages); // stoping the clicks 
+    imageTwoRef.removeEventListener('click', renderThreeRandomImages);
+    imageThreeRef.removeEventListener('click', renderThreeRandomImages);
+
     var canvasRef = document.getElementById("results-chart");
 
     var totalVotes = [];
@@ -140,14 +147,20 @@ function renderChart() {
         totalVotes.push(imageArray[i].timesClicked);
     }
 
-    new Chart(canvasRef, { 
+    //store the vote in local storage 
+    votesSaved.push(totalVotes, imageDescriptions);
+    var stringVoteSaved = JSON.stringify(votesSaved);
+    localStorage.setItem('Last Votes', stringVoteSaved);
+
+    new Chart(canvasRef, {  //chart is displaying white bars needs to fix
         type: 'bar',
         data: {
           labels: imageDescriptions,  // label for each individual bar
           datasets: [{
             label: 'Votes Per Image',
             data: totalVotes, // an array of the number of votes per goat
-            backgroundColor: ['red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink'],
+            backgroundColor: ['red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink',
+            'red', 'blue', 'green', 'orange', 'pink', 'black','red', 'blue', 'green', 'orange', 'pink', 'black'],
           }],
         },
         options: {
