@@ -2,7 +2,6 @@
 
 var imageArray = []; //store all the images
 var imageDescriptions = []; //store the image's description 
-var views = []; //still need to work on that 
 
 var totalClicks = 0;
 var MAX_CLICKS = 25; //make sure to change the number back
@@ -10,7 +9,7 @@ var MAX_CLICKS = 25; //make sure to change the number back
 var imgId1 = "img1";
 var imgId2 = "img2";
 var imgId3 = "img3";
-
+var listResults = document.getElementById("list-results");
 
 
 
@@ -46,6 +45,15 @@ function randomIndexGenerator(){
 var random = new randomIndexGenerator();
 
 
+function renderlist(){
+    for(var i = 0; i < imageArray.length; i++){
+        var liList = document.createElement('li');
+        liList.textContent = `${imageArray[i].description} got ${imageArray[i].timesClicked} votes and was viewed ${imageArray[i].views}.`;
+        listResults.append(liList);
+    }
+}
+
+
 function renderThreeRandomImages(event){
     //add counter
     if(event) { //click counter
@@ -58,6 +66,8 @@ function renderThreeRandomImages(event){
         
         if(totalClicks === MAX_CLICKS) {
             renderChart();
+            renderlist();
+
         }
     }
     
@@ -76,12 +86,15 @@ function renderThreeRandomImages(event){
     var imageTwo = imageArray[randomIndexTwo];
     var imageThree = imageArray[randomIndexThree];
 
+    imageOne.views++;
     imageOneRef.src = imageOne.imgPath;
     imageOneRef.alt = imageOne.description;
 
+    imageTwo.views++;
     imageTwoRef.src = imageTwo.imgPath;
     imageTwoRef.alt = imageTwo.description;
 
+    imageThree.views++;
     imageThreeRef.src = imageThree.imgPath;
     imageThreeRef.alt = imageThree.description;
 
@@ -92,12 +105,14 @@ function imgconstructer(imgPath, description){
     this.imgPath = imgPath; 
     this.description = description;
     this.timesClicked = 0;
+    this.views = 0;
 
     imageArray.push(this);
     imageDescriptions.push(description);
 
     this.registerClick = function() {
         this.timesClicked++;
+
     }
 }
 
@@ -143,8 +158,11 @@ function renderChart() {
     var canvasRef = document.getElementById("results-chart");
 
     var totalVotes = [];
+    var totalViews = [];
     for(var i = 0; i < imageArray.length; i++){
         totalVotes.push(imageArray[i].timesClicked);
+        totalViews.push(imageArray[i].views);
+
     }
 
     //store the vote in local storage 
@@ -157,8 +175,8 @@ function renderChart() {
         data: {
           labels: imageDescriptions,  // label for each individual bar
           datasets: [{
-            label: 'Votes Per Image',
-            data: totalVotes, // an array of the number of votes per goat
+            label: 'Votes Per Image', 'Views',
+            data: totalVotes, totalViews,
             backgroundColor: ['red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink',
             'red', 'blue', 'green', 'orange', 'pink', 'black','red', 'blue', 'green', 'orange', 'pink', 'black'],
           }],
