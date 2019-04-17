@@ -47,9 +47,9 @@ var random = new randomIndexGenerator();
 
 function renderThreeRandomImages(event){
     //add counter
-    if(event) {
+    if(event) { //click counter
         for(var i = 0; i < imageArray.length; i++) {
-            if(event.target.alt == imageArray[i].decription) {
+            if(event.target.alt == imageArray[i].description) {
                 imageArray[i].registerClick();
             }
         }
@@ -59,6 +59,7 @@ function renderThreeRandomImages(event){
             renderChart();
         }
     }
+    
     random.getThreeRandomIndices();
     var imagesIndices = random.currentIndices;
 
@@ -75,22 +76,24 @@ function renderThreeRandomImages(event){
     var imageThree = imageArray[randomIndexThree];
 
     imageOneRef.src = imageOne.imgPath;
-    imageOneRef.alt = imageOne.decription;
+    imageOneRef.alt = imageOne.description;
 
     imageTwoRef.src = imageTwo.imgPath;
-    imageTwoRef.alt = imageTwo.decription;
+    imageTwoRef.alt = imageTwo.description;
 
     imageThreeRef.src = imageThree.imgPath;
-    imageThreeRef.alt = imageThree.decription;
+    imageThreeRef.alt = imageThree.description;
+
+
 }
 
-function imgconstructer(imgPath, decription){
+function imgconstructer(imgPath, description){
     this.imgPath = imgPath; 
-    this.descriptions = decription;
+    this.description = description;
     this.timesClicked = 0;
 
     imageArray.push(this);
-    imageDescriptions.push(decription);
+    imageDescriptions.push(description);
 
     this.registerClick = function() {
         this.timesClicked++;
