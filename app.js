@@ -4,7 +4,7 @@ var imageArray = [];
 var imageDescriptions = [];
 
 var totalClicks = 0;
-var MAX_CLICKS = 25;
+var MAX_CLICKS = 5; //make sure to change the number back
 
 var imgId1 = "img1";
 var imgId2 = "img2";
@@ -118,7 +118,7 @@ new imgconstructer('img/shark.jpg', 'Shark blanket');
 new imgconstructer('img/sweep.png', 'Cleaning baby');
 new imgconstructer('img/tauntaun.jpg', 'starwars blanket');
 new imgconstructer('img/unicorn.jpg', 'Unicorn meat');
-new imgconstructer('img/water-can.jpg', 'More like unwater can ');
+new imgconstructer('img/water-can.jpg', 'More like unwater-can ');
 new imgconstructer('img/usb.gif', 'Tenticale usb');
 new imgconstructer('img/wine-glass.jpg', 'Badly made glass');
 
