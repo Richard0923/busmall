@@ -1,16 +1,17 @@
 'use strict'
 
-var imageArray = []; //store all the images
-var imageDescriptions = []; //store the image's description 
+var imageArray = []; 
+var imageDescriptions = [];  
 
 var totalClicks = 0;
-var MAX_CLICKS = 25; //make sure to change the number back
+var MAX_CLICKS = 25; 
 
 var imgId1 = "img1";
 var imgId2 = "img2";
 var imgId3 = "img3";
 var listResults = document.getElementById("list-results");
-
+var canvasRef = document.getElementById("results-chart");
+var votesButton = document.getElementById('votes-button');  
 
 
 
@@ -55,8 +56,8 @@ function renderlist(){
 
 
 function renderThreeRandomImages(event){
-    //add counter
-    if(event) { //click counter
+    
+    if(event) { 
         for(var i = 0; i < imageArray.length; i++) {
             if(event.target.alt == imageArray[i].description) {
                 imageArray[i].registerClick();
@@ -148,15 +149,16 @@ imageThreeRef.addEventListener('click', renderThreeRandomImages);
 
 renderThreeRandomImages();
 
-var votesSaved = [];//for the local storage
+
+var votesSaved = [];
+
 
 function renderChart() {
-    imageOneRef.removeEventListener('click', renderThreeRandomImages); // stoping the clicks 
+    imageOneRef.removeEventListener('click', renderThreeRandomImages); 
     imageTwoRef.removeEventListener('click', renderThreeRandomImages);
     imageThreeRef.removeEventListener('click', renderThreeRandomImages);
 
-    var canvasRef = document.getElementById("results-chart");
-
+   
     var totalVotes = [];
     var totalViews = [];
     for(var i = 0; i < imageArray.length; i++){
@@ -165,30 +167,41 @@ function renderChart() {
 
     }
 
-    //store the vote in local storage 
-    votesSaved.push(totalVotes, imageDescriptions);
-    var stringVoteSaved = JSON.stringify(votesSaved);
-    localStorage.setItem('Last Votes', stringVoteSaved);
+      
+  votesSaved.push(totalVotes, imageDescriptions);
+  var stringVoteSaved = JSON.stringify(votesSaved);
+  localStorage.setItem('Last Votes', stringVoteSaved); 
+  var votesParsed = JSON.parse(localStorage.getItem('Last Votes'));
 
-    new Chart(canvasRef, {  //chart is displaying white bars needs to fix
-        type: 'bar',
-        data: {
-          labels: imageDescriptions,  // label for each individual bar
-          datasets: [{
-            label: 'Votes Per Image', 'Views',
-            data: totalVotes, totalViews,
-            backgroundColor: ['red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink',
-            'red', 'blue', 'green', 'orange', 'pink', 'black','red', 'blue', 'green', 'orange', 'pink', 'black'],
-          }],
-        },
-        options: {
-          scales: {
-            yAxes: [{
-              tick: {
-                beginAtZero: true,
-              }
-            }]
-          }
+    
+    
+    
+
+
+    new Chart(canvasRef, {  
+      type: 'bar',
+      data: {
+        labels: imageDescriptions,   
+        datasets: [{
+          label: 'Votes Per Image', 
+          data:  totalVotes, 
+          backgroundColor: ['red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink',
+          'red', 'blue', 'green', 'orange', 'pink', 'black','red', 'blue', 'green', 'orange', 'pink', 'black'],
+        }],
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            tick: {
+              beginAtZero: true,
+            }
+          }]
         }
-    });
+      }
+  });
+
+
+    
 };
+
+votesButton.addEventListener('click', renderChart );
